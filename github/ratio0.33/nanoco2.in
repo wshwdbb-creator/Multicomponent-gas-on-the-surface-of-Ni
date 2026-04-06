@@ -1,0 +1,113 @@
+
+# ----------------- Init Section -----------------
+
+  boundary p p p
+  neighbor 3.0 bin
+  neigh_modify every 1 delay 0 check yes
+  atom_style full
+  units metal
+  pair_style hybrid eam lj/cut/coul/long 10.0 8.0
+  bond_style harmonic
+  angle_style harmonic
+
+
+# ----------------- Atom Definition Section -----------------
+
+read_data "system.data"
+include "system.in.settings"
+kspace_style pppm 0.00001
+pair_coeff 1 1 lj/cut/coul/long  0.210 3.03
+pair_coeff 2 2 lj/cut/coul/long  0.055 3.43
+pair_coeff 3 3  lj/cut/coul/long  0.1521 3.1507
+pair_coeff 4 4  lj/cut/coul/long  0 0
+pair_coeff 5 5  lj/cut/coul/long  0.046 2.958
+pair_coeff 6 6 eam Ni_u3.eam 
+pair_coeff 7 7 eam Ni_u3.eam 
+pair_coeff 1 7  lj/cut/coul/long 0 0
+pair_coeff 2 7  lj/cut/coul/long 0 0
+pair_coeff 3 7  lj/cut/coul/long 0 0
+pair_coeff 4 7  lj/cut/coul/long 0 0
+pair_coeff 5 7  lj/cut/coul/long 0 0
+pair_coeff 6 7  lj/cut/coul/long 0 0
+pair_coeff 1 6  lj/cut/coul/long 0 0
+pair_coeff 2 6  lj/cut/coul/long 0 0
+pair_coeff 3 6  lj/cut/coul/long 0 0
+pair_coeff 4 6  lj/cut/coul/long 0 0
+pair_coeff 5 6  lj/cut/coul/long 0 0
+pair_modify mix geometric
+special_bonds lj/coul 0.0 0.0 0.5
+group spce type  3  4
+fix fShakeSPCE spce shake 0.0001 10 100 b 2 a 1
+# ----------------- Run Section -----------------
+
+
+group f type 6:7
+group all1 type 1:2
+group all2 type 3:4
+group all3 type 5
+group all4 type 1:5
+timestep 0.001
+velocity all1 create 300.0 12345 rot yes dist gaussian
+velocity   all2 create 300 3727579  rot yes dist gaussian 
+velocity    all3 create 300 3732579  rot yes dist gaussian 
+#velocity     o create 300 3757215  rot yes dist gaussian 
+compute mytemp  all4 temp 
+thermo          100
+thermo_style  custom step temp 
+thermo_modify temp mytemp
+fix 12231 f setforce 0.0 0.0 0.0
+
+#fix 12231 tube1 setforce 0.0 0.0 0.0
+#fix 12232 tube2  setforce 0.0 0.0 0.0
+#fix 12233 wall  setforce 0.0 0.0 0.0
+compute 1 all pe/atom
+compute 2 all ke/atom
+
+
+#fix fxconp tube1  electrode/conp 1.41 1.805 couple tube2 -1.41 symm off 
+#compute     peratom tfn stress/atom NULL
+#compute     p tfn reduce sum c_peratom[1] c_peratom[2] c_peratom[3]
+#fix 33 tfn ave/atom 10 20 10000 c_peratom[1] c_peratom[2] c_peratom[3]
+
+compute     pera all stress/atom NULL
+compute     paer all reduce sum c_pera[1] c_pera[2] c_pera[3]
+fix 343 all ave/atom 10 200 10000 c_pera[1] c_pera[2] c_pera[3]
+
+
+
+
+
+dump mydump all custom 10000 dump.lammpstrj id  type mass x y z  vx vy vz fx fy fz
+dump   1 all custom 10000 bdu3.nyFRR.*  id mol type mass x y z   c_pera[1] c_pera[2] c_pera[3]  c_2  q  c_1
+
+restart 100000 restart.*.equil
+minimize        1.0e-6 1.0e-8 200000 200000
+fix 1 all temp/berendsen 300.0 300.0 0.2
+run 100000         
+unfix 1
+fix 2 all nvt temp 300.0 300.0 100
+run 900000        
+unfix 2
+write_data equ1.data
+write_restart restart1.equ
+fix 3 all nvt temp 300.0 773.0 100 #change the 773 to 873 or other to change the temp
+run 3000000       
+unfix 3
+fix 4 all nvt temp 773.0 773.0 100 #change the 773 to 873 or other to change the temp
+run 3000000        
+unfix 4
+write_data equ2.data
+write_restart restart2.equ
+fix 5 all nve
+run 3000000       
+unfix 5
+write_data equ3.data
+write_restart restart3.equ
+
+
+
+
+
+
+ 
+ 

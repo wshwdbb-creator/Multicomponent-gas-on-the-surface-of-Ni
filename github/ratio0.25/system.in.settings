@@ -1,0 +1,4 @@
+bond_coeff 1 560 1
+bond_coeff   2         600.0   1.0
+angle_coeff  1       75.0    109.47
+bond_coeff 3 573 1
