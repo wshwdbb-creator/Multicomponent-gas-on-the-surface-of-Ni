@@ -23,17 +23,17 @@ pair_coeff 4 4  lj/cut/coul/long  0 0
 pair_coeff 5 5  lj/cut/coul/long  0.046 2.958
 pair_coeff 6 6 eam Ni_u3.eam 
 pair_coeff 7 7 eam Ni_u3.eam 
-pair_coeff 1 7  lj/cut/coul/long 0 0
-pair_coeff 2 7  lj/cut/coul/long 0 0
-pair_coeff 3 7  lj/cut/coul/long 0 0
+pair_coeff 1 7  lj/cut/coul/long 0.079 2.665
+pair_coeff 2 7  lj/cut/coul/long 0.0406 2.865
+pair_coeff 3 7  lj/cut/coul/long 0.0676 2.725
 pair_coeff 4 7  lj/cut/coul/long 0 0
-pair_coeff 5 7  lj/cut/coul/long 0 0
+pair_coeff 5 7  lj/cut/coul/long 0.037 2.629
 pair_coeff 6 7  lj/cut/coul/long 0 0
-pair_coeff 1 6  lj/cut/coul/long 0 0
-pair_coeff 2 6  lj/cut/coul/long 0 0
-pair_coeff 3 6  lj/cut/coul/long 0 0
+pair_coeff 1 6  lj/cut/coul/long 0.079 2.665
+pair_coeff 2 6  lj/cut/coul/long 0.0406 2.865
+pair_coeff 3 6  lj/cut/coul/long 0.0676 2.725
 pair_coeff 4 6  lj/cut/coul/long 0 0
-pair_coeff 5 6  lj/cut/coul/long 0 0
+pair_coeff 5 6  lj/cut/coul/long 0.037 2.629
 pair_modify mix geometric
 special_bonds lj/coul 0.0 0.0 0.5
 group spce type  3  4
